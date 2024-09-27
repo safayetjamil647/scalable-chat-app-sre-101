@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  postgresql-master:
+    image: bitnami/postgresql:12
+    container_name: postgres12master
+    environment:
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=postgres
+      - POSTGRESQL_DATABASE=postgres
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=repl_bms
+      - POSTGRESQL_REPLICATION_PASSWORD=Redt_MF5_Upa9
+    ports:
+      - "5444:5432"
+    volumes:
+      - postgresql_data:/bitnami/postgresql
+      - /home/safayet/Containerize/scalable-chat/database/postgres/postgresconf/postgresql.conf:/opt/bitnami/postgresql/conf/postgresql.conf
+      - /home/safayet/Containerize/scalable-chat/database/postgres/postgresconf/pg_hba.conf:/opt/bitnami/postgresql/conf/pg_hba.conf  
+    networks:
+      custom_bridge_network:
+        ipv4_address: 10.100.0.5  # Set a specific IP address for the PostgreSQL container
+    restart: unless-stopped
+
+volumes:
+  postgresql_data:
+    driver: local
+
+networks:
+  custom_bridge_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.100.0.0/24  # Set the custom IP range (subnet)
